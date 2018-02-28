@@ -52,7 +52,8 @@ function initMap() {
     });
     google.maps.event.addListener(map, 'click', function(event) {
         $('#form').show();
-        $('#location').val(event.latLng);
+        $('#lat').val(event.latLng.lat());
+        $('#lng').val(event.latLng.lng());
     });
 
 }

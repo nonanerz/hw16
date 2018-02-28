@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Feb 28 12:03:53 EET 2018
+#Wed Feb 28 12:33:42 EET 2018
 25.file=/Users/ed/work/gh-hw-16/platforms/android/app/build/intermediates/res/debug/resources-debug.ap_/res/drawable-port-mdpi-v4/screen.png
 25.base=/Users/ed/work/gh-hw-16/platforms/android/app/build/intermediates/res/debug/resources-debug.ap_
 22.set=ANDROID_RESOURCE
