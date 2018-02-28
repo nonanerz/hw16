@@ -1,27 +1,5 @@
 .idea
 node_modules/
 #platform agnostic
-platforms/*/assets/www
-
-# Android
-platforms/android/assets/www
-platforms/android/bin/
-platforms/android/gen/
-platforms/android/res/xml/config.xml
-platforms/android/ant-build
-platforms/android/ant-gen
-platforms/android/CordovaLib/ant-build
-platforms/android/CordovaLib/ant-gen
-platforms/android/local.properties
-platforms/android/CordovaLib/local.properties
-
-# iOS
-platforms/ios/build/
-platforms/ios/CordovaLib/build/
-platforms/ios/www
-platforms/ios/Service\ Request/config.xml
-platforms/ios/.staging
-
-# Emulator logs
-platforms/ios/cordova/console.log
+platforms/
 
