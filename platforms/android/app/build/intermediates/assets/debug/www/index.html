@@ -53,21 +53,22 @@
 <div id="form" style="display: none">
     <div class="form-group">
         <h2>Event Creation</h2>
-        <form>
-            <input id="Name" type="text" class="form-control" placeholder="Title">
-            <textarea id="Address" cols="40" rows="5" type="text" class="form-control" placeholder="Description"></textarea>
-        </form>
-        <div class='input-group date' id='datetimepicker'>
-            <input type='text' class="form-control"/>
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-calendar"></span>
+        <form id="text_form">
+            <input id="title" type="text" class="form-control" placeholder="Title">
+            <input id="description" type="text" class="form-control" placeholder="Description">
+
+            <div class='input-group date' id='datetimepicker'>
+                <input type='text' class="form-control"/>
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
             </span>
-        </div>
+            </div>
+        </form>
     </div>
 
     <input type="text" id="lat" hidden>
     <input type="text" id="lng" hidden>
-    <button id="Submit" value="Submit" type="button" class="btn btn-primary">Submit</button>
+    <button id="submit" type="submit" class="btn btn-primary">Submit</button>
 </div>
 
 <script type="text/javascript">
