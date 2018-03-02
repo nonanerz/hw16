@@ -102,42 +102,35 @@ jQuery.fn.exists = function () {
 
 // Address jQuery Validator
 function AddressValidator(value, element, paras) {
-  // Convert the value variable into something a bit more descriptive
   var CurrentAddress = value;
   if (value.length === 0) {
     return true;
   }
-  if ($(element).data("LastAddressValidated") == CurrentAddress) {
+  if ($(element).data("LastAddressValidated") === CurrentAddress) {
     return $(element).data("IsValid");
   }
 
   $(element).data("IsChecking", true);
   $(element).data("LastAddressValidated", CurrentAddress);
 
-  /* Google Maps doesn't like line-breaks, remove them */
   CurrentAddress = CurrentAddress.replace(/\n/g, "");
 
-  /* Create a new Google geocoder */
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({ 'address': CurrentAddress }, function (results, status) {
 
     // Google reported a valid geocoded address
-    if (status == google.maps.GeocoderStatus.OK) {
+    if (status === google.maps.GeocoderStatus.OK) {
 
       // Get the formatted Google result
       var address = results[0].formatted_address;
-
-      /* Count the commas in the fomatted address. This doesn't look great, but it helps us understand how specific the geocoded address is.  For example, "CA" will geocde to "California, USA". */
       numCommas = address.match(/,/g).length;
 
-      /* A full street address will have at least 3 commas.  Alternate techniques involve fetching the address_components returned by Google Maps. That code looked even more ugly. */
       if (numCommas >= 3) {
         address = address.replace(/, /, "\n");
         $(element).val(address);
         $(element).data("LastAddressValidated", address);
         $(element).data("IsValid", true);
       } else {
-        /* Google Maps was able to geocode the address, but it wasn't specific enough (not enough commas) to be a valid street address. */
         $(element).data("IsValid", false);
       }
     } else {
@@ -154,11 +147,9 @@ function AddressValidator(value, element, paras) {
       form.validate().element(element);
     }
   });
-  /* The Address validator always returns 'true' when initially called. The true result will be return later by the geocode function (above) */
   return true;
 }
 // Define a new jQuery Validator method
 $.validator.addMethod("fulladdress", AddressValidator);
-
 
 app.initialize();
