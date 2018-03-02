@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
     <link rel="stylesheet" type="text/css"
@@ -52,20 +53,21 @@
 <div id="form" style="display: none">
     <div class="form-group">
         <h2>Event Creation</h2>
-        <input type="text" class="form-control" placeholder="Title">
-        <input type="text" class="form-control" placeholder="Description">
-
+        <form>
+            <input id="Name" type="text" class="form-control" placeholder="Title">
+            <textarea id="Address" cols="40" rows="5" type="text" class="form-control" placeholder="Description"></textarea>
+        </form>
         <div class='input-group date' id='datetimepicker'>
             <input type='text' class="form-control"/>
             <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
+                <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
     </div>
 
     <input type="text" id="lat" hidden>
     <input type="text" id="lng" hidden>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button id="Submit" value="Submit" type="button" class="btn btn-primary">Submit</button>
 </div>
 
 <script type="text/javascript">
