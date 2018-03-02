@@ -61,6 +61,8 @@ $(document).ready(function () {
   $("#submit").click(function () {
     var title = $("#title").val();
     var description = $("#description").val();
+    var selectedDate = $('#datepicker').val();
+
     var isValid = true;
 
     if (title === "") {
@@ -77,6 +79,13 @@ $(document).ready(function () {
       $("#description").text("");
     }
 
+    if (selectedDate === "") {
+      $("#datepicker_error").text("date is is required");
+      isValid = false;
+    } else {
+      $("#datepicker").text("");
+    }
+
     if (isValid) {
       $("#text_form").submit();
     }
@@ -84,5 +93,7 @@ $(document).ready(function () {
 
   $("title").focus();
 });
+
+
 
 app.initialize();

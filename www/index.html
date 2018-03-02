@@ -31,7 +31,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
     <link rel="stylesheet" type="text/css"
@@ -59,9 +62,10 @@
             <input id="description" type="text" class="form-control" placeholder="Description">
             <span id="description_error"></span>
             <div class='input-group date' id='datetimepicker'>
-                <input type='text' class="form-control"/>
+                <input id="datepicker" type='text' class="form-control"/>
                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
+                    <span id="datepicker_error"></span>
             </span>
             </div>
         </form>
