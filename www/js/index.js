@@ -18,7 +18,7 @@
  */
 var app = {
     // Application Constructor
-    initialize: function() {
+    initialize: function () {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false)
     },
 
@@ -26,12 +26,12 @@ var app = {
     //
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
-    onDeviceReady: function() {
+    onDeviceReady: function () {
         this.receivedEvent('deviceready')
     },
 
     // Update DOM on a Received Event
-    receivedEvent: function(id) {
+    receivedEvent: function (id) {
         var parentElement = document.getElementById(id)
         var listeningElement = parentElement.querySelector('.listening')
         var receivedElement = parentElement.querySelector('.received')
@@ -58,11 +58,11 @@ function initMap() {
         success: function (data) {
             data.events.forEach(item => {
 
-                var position = new google.maps.LatLng(item.lat,item.lng);
+                var position = new google.maps.LatLng(item.lat, item.lng);
 
                 var marker = new google.maps.Marker({
                     position: position,
-                    title:"Hello World!"
+                    title: "Hello World!"
                 });
 
                 var contentString =
@@ -78,7 +78,7 @@ function initMap() {
                 var infowindow = new google.maps.InfoWindow({
                     content: contentString
                 });
-                marker.addListener('click', function() {
+                marker.addListener('click', function () {
                     infowindow.open(map, marker);
                 });
                 marker.setMap(map);
@@ -88,76 +88,74 @@ function initMap() {
     });
 
 
-
-    google.maps.event.addListener(map, 'click', function(event) {
+    google.maps.event.addListener(map, 'click', function (event) {
         $('#form').show()
         $('#lat').val(event.latLng.lat())
         $('#lng').val(event.latLng.lng())
     })
 
 }
+
 $(document).ready(function () {
     $("#submit").click(function () {
-    var title = $("#title").val()
-    var description = $("#description").val()
-    var selectedDate = $('#datetimepicker').data("DateTimePicker").date()
-    var lng = $('#lng').val()
-    var lat = $('#lat').val()
+        var title = $("#title").val()
+        var description = $("#description").val()
+        var selectedDate = $('#datetimepicker').data("DateTimePicker").date()
+        var lng = $('#lng').val()
+        var lat = $('#lat').val()
 
-    var isValid = true
+        var isValid = true
 
-    if (title === "") {
-      $("#title_error").text("title is required")
-      isValid = false
-    } else {
-      $("#title").text("")
-    }
+        if (title === "") {
+            $("#title_error").text("title is required")
+            isValid = false
+        } else {
+            $("#title").text("")
+        }
 
-    if (description === "") {
-      $("#description_error").text("description is required")
-      isValid = false
-    } else {
-      $("#description").text("")
-    }
+        if (description === "") {
+            $("#description_error").text("description is required")
+            isValid = false
+        } else {
+            $("#description").text("")
+        }
 
-    if (selectedDate === "") {
-      $("#datepicker_error").text("date is is required")
-      isValid = false
-    } else {
-      $("#datepicker").text("")
-    }
+        if (selectedDate === "") {
+            $("#datepicker_error").text("date is is required")
+            isValid = false
+        } else {
+            $("#datepicker").text("")
+        }
 
-    if (isValid) {
-        selectedDate = moment(selectedDate).format()
+        if (isValid) {
+            selectedDate = moment(selectedDate).format()
+            $.ajax({
+                url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
+                type: 'post',
+                data: JSON.stringify({
+                    title: title,
+                    description: description,
+                    date: selectedDate,
+                    lng: lng,
+                    lat: lat
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                dataType: 'json',
+                success: function (data) {
+                    location.reload();
+                    $('#form').hide()
+                    $("#title").val('')
+                    $("#description").val('')
+                    $('#datepicker').val('')
+                }
+            });
+        }
+    })
 
-
-        $.ajax({
-            url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
-            type: 'post',
-            data: JSON.stringify({
-                title: title,
-                description: description,
-                date: selectedDate,
-                lng: lng,
-                lat: lat
-            }),
-            headers: {
-                "Content-Type": "application/json"
-            },
-            dataType: 'json',
-            success: function (data) {
-                $('#form').hide()
-                $("#title").val('')
-                $("#description").val('')
-                $('#datepicker').val('')
-            }
-        });
-    }
-  })
-
-  $("title").focus()
+    $("title").focus()
 })
-
 
 
 app.initialize()
