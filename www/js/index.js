@@ -50,6 +50,45 @@ function initMap() {
         zoom: 8,
         center: myLatlng
     })
+
+
+    $.ajax({
+        url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
+        type: 'get',
+        success: function (data) {
+            data.events.forEach(item => {
+
+                var position = new google.maps.LatLng(item.lat,item.lng);
+
+                var marker = new google.maps.Marker({
+                    position: position,
+                    title:"Hello World!"
+                });
+
+                var contentString =
+                    `<div>
+                         <strong>Event name:</strong>
+                         <p>${item.title}</p><br/>
+                         <strong>Description:</strong>
+                         <p>${item.description}</p><br/>
+                         <strong>At:</strong>
+                         <p>${item.date}</p>
+                    </div>`;
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
+                });
+                marker.setMap(map);
+
+            })
+        }
+    });
+
+
+
     google.maps.event.addListener(map, 'click', function(event) {
         $('#form').show()
         $('#lat').val(event.latLng.lat())
