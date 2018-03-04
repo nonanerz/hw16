@@ -32,6 +32,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.min.css">
@@ -52,20 +55,24 @@
 <div id="form" style="display: none">
     <div class="form-group">
         <h2>Event Creation</h2>
-        <input type="text" class="form-control" placeholder="Title">
-        <input type="text" class="form-control" placeholder="Description">
-
-        <div class='input-group date' id='datetimepicker'>
-            <input type='text' class="form-control"/>
-            <span class="input-group-addon">
+        <form id="text_form">
+            <input id="title" type="text" class="form-control" placeholder="Title">
+            <span id="title_error"></span>
+            <input id="description" type="text" class="form-control" placeholder="Description">
+            <span id="description_error"></span>
+            <div class='input-group date' id='datetimepicker'>
+                <input id="datepicker" type='text' class="form-control"/>
+                <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
+                    <span id="datepicker_error"></span>
             </span>
-        </div>
+            </div>
+        </form>
     </div>
 
     <input type="text" id="lat" hidden>
     <input type="text" id="lng" hidden>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button id="submit" type="submit" class="btn btn-primary">Submit</button>
 </div>
 
 <script type="text/javascript">
