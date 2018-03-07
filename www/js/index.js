@@ -47,7 +47,7 @@ function initMap() {
     var myLatlng = {lat: 49.445, lng: 32.061}
 
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
+        zoom: 12,
         center: myLatlng
     })
     $('#map').css('height', $(window).height());
@@ -96,9 +96,6 @@ function initMap() {
         $('#lng').val(event.latLng.lng())
     })
 
-}
-
-$(document).ready(function () {
     $("#submit").click(function () {
         var title = $("#title").val()
         var description = $("#description").val()
@@ -146,7 +143,33 @@ $(document).ready(function () {
                 },
                 dataType: 'json',
                 success: function (data) {
-                    location.reload();
+                    console.log(data.event)
+
+                    var position = new google.maps.LatLng(data.event.lat, data.event.lng);
+
+                    var marker = new google.maps.Marker({
+                        position: position,
+                        title: "Hello World!"
+                    });
+
+                    var contentString =
+                        `<div>
+                         <strong>Event name:</strong>
+                         <p>${data.event.title}</p><br/>
+                         <strong>Description:</strong>
+                         <p>${data.event.description}</p><br/>
+                         <strong>At:</strong>
+                         <p>${data.event.date}</p>
+                    </div>`;
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+                    marker.addListener('click', function () {
+                        infowindow.open(map, marker);
+                    });
+                    marker.setMap(map);
+
                     $('#form').hide()
                     $('#map').show()
                     $("#title").val('')
@@ -156,12 +179,12 @@ $(document).ready(function () {
             });
         }
     })
-
     $("#cancel").click(function () {
         $('#form').hide()
         $('#map').show()
     })
-})
+}
+
 
 
 app.initialize()
