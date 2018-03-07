@@ -50,6 +50,7 @@ function initMap() {
         zoom: 8,
         center: myLatlng
     })
+    $('#map').css('height', $(window).height());
 
 
     $.ajax({
@@ -90,6 +91,7 @@ function initMap() {
 
     google.maps.event.addListener(map, 'click', function (event) {
         $('#form').show()
+        $('#map').hide()
         $('#lat').val(event.latLng.lat())
         $('#lng').val(event.latLng.lng())
     })
@@ -146,6 +148,7 @@ $(document).ready(function () {
                 success: function (data) {
                     location.reload();
                     $('#form').hide()
+                    $('#map').show()
                     $("#title").val('')
                     $("#description").val('')
                     $('#datepicker').val('')
@@ -154,7 +157,10 @@ $(document).ready(function () {
         }
     })
 
-    $("title").focus()
+    $("#cancel").click(function () {
+        $('#form').hide()
+        $('#map').show()
+    })
 })
 
 
