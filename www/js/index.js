@@ -1,72 +1,47 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License") you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function () {
-        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false)
-    },
+let app = {
+  initialize: function () {
+    document.addEventListener('deviceready', this.onDeviceReady.bind(this), false)
+  },
+  onDeviceReady: function () {
+    this.receivedEvent('deviceready')
+  },
 
-    // deviceready Event Handler
-    //
-    // Bind any cordova events here. Common events are:
-    // 'pause', 'resume', etc.
-    onDeviceReady: function () {
-        this.receivedEvent('deviceready')
-    },
+  receivedEvent: function (id) {
+    let parentElement = document.getElementById(id)
+    let listeningElement = parentElement.querySelector('.listening')
+    let receivedElement = parentElement.querySelector('.received')
 
-    // Update DOM on a Received Event
-    receivedEvent: function (id) {
-        var parentElement = document.getElementById(id)
-        var listeningElement = parentElement.querySelector('.listening')
-        var receivedElement = parentElement.querySelector('.received')
+    listeningElement.setAttribute('style', 'display:none')
+    receivedElement.setAttribute('style', 'display:block')
 
-        listeningElement.setAttribute('style', 'display:none')
-        receivedElement.setAttribute('style', 'display:block')
-
-        console.log('Received Event: ' + id)
-    }
+    console.log('Received Event: ' + id)
+  }
 }
 
-function initMap() {
-    var myLatlng = {lat: 49.445, lng: 32.061}
+// map initialization
+function initMap () {
+  let myLatlng = {lat: 49.445, lng: 32.061}
+  // zoom map to the target area
+  let map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 12,
+    center: myLatlng
+  })
+  $('#map').css('height', $(window).height())
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
-        center: myLatlng
-    })
-    $('#map').css('height', $(window).height());
+  // get list of the events
+  $.ajax({
+    url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
+    type: 'get',
+    success: function (data) {
+      data.events.forEach(item => {
+        let position = new google.maps.LatLng(item.lat, item.lng)
 
-
-    $.ajax({
-        url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
-        type: 'get',
-        success: function (data) {
-            data.events.forEach(item => {
-
-                var position = new google.maps.LatLng(item.lat, item.lng);
-
-                var marker = new google.maps.Marker({
-                    position: position,
-                    title: "Hello World!"
-                });
-
-                var contentString =
+        let marker = new google.maps.Marker({
+          position: position,
+          title: 'Hello World!'
+        })
+        // generate tooltip content
+        let contentString =
                     `<div>
                          <strong>Event name:</strong>
                          <p>${item.title}</p><br/>
@@ -74,85 +49,84 @@ function initMap() {
                          <p>${item.description}</p><br/>
                          <strong>At:</strong>
                          <p>${item.date}</p>
-                    </div>`;
+                    </div>`
 
-                var infowindow = new google.maps.InfoWindow({
-                    content: contentString
-                });
-                marker.addListener('click', function () {
-                    infowindow.open(map, marker);
-                });
-                marker.setMap(map);
+        let infowindow = new google.maps.InfoWindow({
+          content: contentString
+        })
+        marker.addListener('click', function () {
+          infowindow.open(map, marker)
+        })
+        marker.setMap(map)
+      })
+    }
+  })
 
-            })
-        }
-    });
+  // get coordinates by clicking on map
+  google.maps.event.addListener(map, 'click', function (event) {
+    $('#form').show()
+    $('#map').hide()
+    $('#lat').val(event.latLng.lat())
+    $('#lng').val(event.latLng.lng())
+  })
 
+  $('#submit').click(function () {
+    let title = $('#title').val()
+    let description = $('#description').val()
+    let selectedDate = $('#datetimepicker').data('DateTimePicker').date()
+    let lng = $('#lng').val()
+    let lat = $('#lat').val()
 
-    google.maps.event.addListener(map, 'click', function (event) {
-        $('#form').show()
-        $('#map').hide()
-        $('#lat').val(event.latLng.lat())
-        $('#lng').val(event.latLng.lng())
-    })
+    let isValid = true
+    // validate form
+    if (title === '') {
+      $('#title_error').text('title is required')
+      isValid = false
+    } else {
+      $('#title').text('')
+    }
 
-    $("#submit").click(function () {
-        var title = $("#title").val()
-        var description = $("#description").val()
-        var selectedDate = $('#datetimepicker').data("DateTimePicker").date()
-        var lng = $('#lng').val()
-        var lat = $('#lat').val()
+    if (description === '') {
+      $('#description_error').text('description is required')
+      isValid = false
+    } else {
+      $('#description').text('')
+    }
 
-        var isValid = true
+    if (selectedDate === '') {
+      $('#datepicker_error').text('date is is required')
+      isValid = false
+    } else {
+      $('#datepicker').text('')
+    }
+    // submit new event
+    if (isValid) {
+      selectedDate = moment(selectedDate).format()
+      $.ajax({
+        url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
+        type: 'post',
+        data: JSON.stringify({
+          title: title,
+          description: description,
+          date: selectedDate,
+          lng: lng,
+          lat: lat
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        dataType: 'json',
+        success: function (data) {
+          console.log(data.event)
 
-        if (title === "") {
-            $("#title_error").text("title is required")
-            isValid = false
-        } else {
-            $("#title").text("")
-        }
+          let position = new google.maps.LatLng(data.event.lat, data.event.lng)
 
-        if (description === "") {
-            $("#description_error").text("description is required")
-            isValid = false
-        } else {
-            $("#description").text("")
-        }
+          let marker = new google.maps.Marker({
+            position: position,
+            title: 'Hello World!'
+          })
 
-        if (selectedDate === "") {
-            $("#datepicker_error").text("date is is required")
-            isValid = false
-        } else {
-            $("#datepicker").text("")
-        }
-
-        if (isValid) {
-            selectedDate = moment(selectedDate).format()
-            $.ajax({
-                url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
-                type: 'post',
-                data: JSON.stringify({
-                    title: title,
-                    description: description,
-                    date: selectedDate,
-                    lng: lng,
-                    lat: lat
-                }),
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data.event)
-
-                    var position = new google.maps.LatLng(data.event.lat, data.event.lng);
-
-                    var marker = new google.maps.Marker({
-                        position: position,
-                        title: "Hello World!"
-                    });
-
-                    var contentString =
+          let contentString =
                         `<div>
                          <strong>Event name:</strong>
                          <p>${data.event.title}</p><br/>
@@ -160,31 +134,29 @@ function initMap() {
                          <p>${data.event.description}</p><br/>
                          <strong>At:</strong>
                          <p>${data.event.date}</p>
-                    </div>`;
+                    </div>`
 
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
-                    marker.addListener('click', function () {
-                        infowindow.open(map, marker);
-                    });
-                    marker.setMap(map);
+          let infowindow = new google.maps.InfoWindow({
+            content: contentString
+          })
+          marker.addListener('click', function () {
+            infowindow.open(map, marker)
+          })
+          marker.setMap(map)
 
-                    $('#form').hide()
-                    $('#map').show()
-                    $("#title").val('')
-                    $("#description").val('')
-                    $('#datepicker').val('')
-                }
-            });
+          $('#form').hide()
+          $('#map').show()
+          $('#title').val('')
+          $('#description').val('')
+          $('#datepicker').val('')
         }
-    })
-    $("#cancel").click(function () {
-        $('#form').hide()
-        $('#map').show()
-    })
+      })
+    }
+  })
+  $('#cancel').click(function () {
+    $('#form').hide()
+    $('#map').show()
+  })
 }
-
-
 
 app.initialize()
