@@ -7,14 +7,13 @@ let app = {
   },
 
   receivedEvent: function (id) {
-    let parentElement = document.getElementById(id)
-    let listeningElement = parentElement.querySelector('.listening')
-    let receivedElement = parentElement.querySelector('.received')
-
-    listeningElement.setAttribute('style', 'display:none')
-    receivedElement.setAttribute('style', 'display:block')
-
-    console.log('Received Event: ' + id)
+      let appElements = {
+          parentElement: document.getElementById(id),
+          listeningElement: this.parentElement.querySelector('.listening'),
+          receivedElement: this.parentElement.querySelector('.received')
+      }
+      appElements.listeningElement.setAttribute('style', 'display:none')
+      appElements.receivedElement.setAttribute('style', 'display:block')
   }
 }
 
@@ -71,61 +70,55 @@ function initMap () {
   })
 
   $('#submit').click(function () {
-    let title = $('#title').val()
-    let description = $('#description').val()
-    let selectedDate = $('#datetimepicker').data('DateTimePicker').date()
-    let lng = $('#lng').val()
-    let lat = $('#lat').val()
+    let event = {
+        title: $('#title').val(),
+        description: $('#description').val(),
+        date: $('#datetimepicker').data('DateTimePicker').date(),
+        lng: $('#lng').val(),
+        lat: $('#lat').val(),
+        isValid: true
+    }
 
-    let isValid = true
     // validate form
-    if (title === '') {
+    if (event.title === '') {
       $('#title_error').text('title is required')
       isValid = false
     } else {
       $('#title').text('')
     }
 
-    if (description === '') {
+    if (event.description === '') {
       $('#description_error').text('description is required')
-      isValid = false
+        event.isValid = false
     } else {
       $('#description').text('')
     }
 
-    if (selectedDate === '') {
+    if (event.date === '') {
       $('#datepicker_error').text('date is is required')
-      isValid = false
+        event.isValid = false
     } else {
       $('#datepicker').text('')
     }
     // submit new event
-    if (isValid) {
-      selectedDate = moment(selectedDate).format()
+    if (event.isValid) {
+        event.date = moment(event.date).format()
       $.ajax({
         url: 'https://polar-gorge-30507.herokuapp.com/api/v1/events',
         type: 'post',
-        data: JSON.stringify({
-          title: title,
-          description: description,
-          date: selectedDate,
-          lng: lng,
-          lat: lat
-        }),
+        data: JSON.stringify(event),
         headers: {
           'Content-Type': 'application/json'
         },
         dataType: 'json',
         success: function (data) {
-          console.log(data.event)
-
           let position = new google.maps.LatLng(data.event.lat, data.event.lng)
-
           let marker = new google.maps.Marker({
             position: position,
             title: 'Hello World!'
           })
 
+            //generate tooltip content
           let contentString =
                         `<div>
                          <strong>Event name:</strong>
@@ -144,8 +137,10 @@ function initMap () {
           })
           marker.setMap(map)
 
+            //back to map view
           $('#form').hide()
           $('#map').show()
+            //clean up fields
           $('#title').val('')
           $('#description').val('')
           $('#datepicker').val('')
@@ -154,6 +149,7 @@ function initMap () {
     }
   })
   $('#cancel').click(function () {
+    //back to map view on event creation cancel
     $('#form').hide()
     $('#map').show()
   })
